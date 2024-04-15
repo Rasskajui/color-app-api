@@ -4,9 +4,10 @@ const paletteRouter = require('./palettes');
 const { NotFoundError } = require('../utils/errors');
 const { login, createUser } = require('../controllers/users');
 const auth = require('../middlewares/auth');
+const { createUserValidation, loginValidation } = require('../utils/validation');
 
-router.post('/signin', login);
-router.post('/signup', createUser);
+router.post('/signin', loginValidation, login);
+router.post('/signup', createUserValidation, createUser);
 router.use(auth);
 router.use('/users', userRouter);
 router.use('/palettes', paletteRouter);
