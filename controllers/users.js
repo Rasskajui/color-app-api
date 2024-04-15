@@ -11,8 +11,7 @@ const {
 } = require('../utils/errors');
 
 module.exports.getUser = (req, res, next) => {
-  const { userId } = req.params;
-  User.findById(userId)
+  User.findById(req.user._id)
     .then((user) => {
       if (user) {
         res.send(user);
@@ -53,8 +52,8 @@ module.exports.createUser = (req, res, next) => {
 };
 
 module.exports.updateProfile = (req, res, next) => {
-  const { name, email } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, email }, { new: true, runValidators: true })
+  const { username, email } = req.body;
+  User.findByIdAndUpdate(req.user._id, { username, email }, { new: true, runValidators: true })
     .then((user) => {
       if (user) {
         res.send({ data: user });
