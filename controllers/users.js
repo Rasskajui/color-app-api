@@ -1,4 +1,8 @@
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+
+const { NODE_ENV, JWT_SECRET } = process.env;
+const { NODE_ENV_DEV } = require('../utils/constants');
 const User = require('../models/user');
 const {
   NotFoundError,
@@ -67,4 +71,14 @@ module.exports.updateProfile = (req, res, next) => {
         next(err);
       }
     });
+};
+
+module.exports.login = (req, res, next) => {
+  const { email, password } = req.body;
+  User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : NODE_ENV_DEV, { expiresIn: '7d' });
+      res.send({ token });
+    })
+    .catch(next);
 };
